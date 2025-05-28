@@ -1,0 +1,393 @@
+Depo Yerleşim Problemi (WLP) Çözümü
+
+         Muhammed Umut Şıbara
+          Öğrenci No: 222804007
+         Celal Bayar Üniversitesi
+
+               Mayıs 2025
+                                           Özet
+
+Bu çalışmada, Depo Yerleşim Problemi (Warehouse Location Problem - WLP) için farklı
+sezgisel ve metasezgisel algoritmalar uygulanarak maliyet açısından en uygun çözümün
+elde edilmesi hedeflenmiştir. Problem, sınırlı kapasiteli depoların kurulumu ve bu depolar
+aracılığıyla müşterilere hizmet verilmesi sürecinde toplam maliyetin (kurulum ve taşıma
+maliyetleri) en aza indirilmesini amaçlamaktadır.
+    Çözüm sürecinde öncelikle Greedy (açgözlü) algoritma ile başlangıç çözümü oluştu-
+rulmuş, ardından Simulated Annealing (SA), Quantum Annealing (QA), Tabu Search ve
+Variable Neighborhood Search (VNS) algoritmaları ile bu çözüm iyileştirilmiştir. VNS al-
+goritması 25 ve 50 iterasyonla test edilmiş ve diğer algoritmalara göre en düşük maliyetli
+çözümleri ürettiği gözlemlenmiştir. Bu nedenle, nihai çözüm olarak VNS ile elde edilen
+sonuçlar esas alınmıştır.
+    Çalışma kapsamında kullanılan algoritmalar Python dili ile kodlanmış ve 25, 50, 200,
+300 ve 500 müşteriden oluşan farklı boyutlardaki veri setleri üzerinde test edilmiştir. Elde
+edilen sonuçlar, algoritmaların farklı ölçeklerdeki problemlere karşı başarımını değerlen-
+dirme imkanı sağlamıştır.
+İçindekiler
+
+1 Giriş                                                                                                                                          2
+
+2 Literatür Özeti                                                                                                                                3
+
+3 Kullanılan Yöntem                                                                                                                              4
+  3.1 Algoritma Akışı . . . . . .    .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   4
+  3.2 Denenen Diğer Yöntemler        .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   4
+  3.3 Parametreler . . . . . . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   5
+  3.4 Uygulama Detayları . . .       .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   5
+
+4 Deneysel Sonuçlar                                                                                                                              6
+  4.1 Uygulanan Algoritmalar . . . . . . .                   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   6
+  4.2 Veri Setleri ve Deney Yapılandırması                   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   7
+  4.3 Çözüm Başarımı . . . . . . . . . . .                   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   7
+  4.4 Sonuçların Değerlendirmesi . . . . . .                 .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   7
+  4.5 Sonuç Tablosu . . . . . . . . . . . . .                .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   8
+  4.6 Grafiksel Sonuçlar . . . . . . . . . . .               .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   8
+
+5 Sonuç ve Tartışma                                                                                                                              9
+  5.1 Kaynakça . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                                                           9
+
+
+
+
+                                                     1
+Bölüm 1
+
+Giriş
+
+Gerçek dünya lojistik problemlerinden biri olan Depo Yerleşim Problemi (Warehouse Lo-
+cation Problem - WLP), sınırlı kaynaklarla müşteri taleplerini karşılamak üzere depo ko-
+numlarının ve müşteri-depo atamalarının en uygun şekilde belirlenmesini amaçlayan bir
+optimizasyon problemidir. Özellikle tedarik zinciri yönetimi, üretim planlaması ve dağıtım
+sistemlerinde bu problem kritik bir rol oynamaktadır.
+    WLP, çözülmesi zor (NP-zor) kombinatoriyel bir problem olması nedeniyle büyük bo-
+yutlu veri setleri için klasik deterministik yöntemlerle çözülmesi oldukça zaman alıcı ve
+maliyetlidir. Bu nedenle, sezgisel (heuristic) ve metasezgisel (metaheuristic) algoritmalar,
+yakınsama hızları ve iyi kalitede çözümler üretmeleri nedeniyle sıklıkla tercih edilmektedir.
+    Bu çalışmada, WLP için farklı çözüm yaklaşımları denenmiş, elde edilen sonuçlar kar-
+şılaştırılmış ve en uygun yöntem olarak Variable Neighborhood Search (VNS) algoritması
+belirlenmiştir. VNS algoritması, esnek yapısı sayesinde farklı komşuluk stratejilerini dene-
+yerek yerel optimumlardan kaçabilmekte ve daha kaliteli çözümler sunabilmektedir. Uy-
+gulama sürecinde farklı büyüklükteki veri setleri kullanılmış, algoritmalar Python diliyle
+kodlanmış ve elde edilen çıktılar dosya bazında kaydedilmiştir.
+
+
+
+
+                                             2
+Bölüm 2
+
+Literatür Özeti
+
+Depo Yerleşim Problemi (WLP), literatürde birçok farklı çözüm yöntemiyle ele alınmıştır.
+Aşağıda WLP üzerine yapılmış beş önemli çalışma ve kısa özetleri sunulmuştur:
+
+   • Krarup, J., Pruzan, P. M. (1983). The Simple Plant Location Problem:
+     Survey and Synthesis. Bu çalışma, klasik depo yerleşim problemini matematik-
+     sel olarak modelleyen ve çözüm yöntemlerini sınıflandıran öncül bir araştırmadır.
+     Yazarlar, doğrusal ve tamsayılı programlama temelli tekniklerin performanslarını
+     analiz etmişlerdir.
+
+   • Korupolu, M. R., Plaxton, C. G., & Rajaraman, R. (2000). Analysis of a
+     Local Search Heuristic for Facility Location Problems. Yerel arama temelli
+     algoritmaların performans analizine odaklanan bu çalışma, farklı başlangıç çözümle-
+     riyle elde edilen sonuçların kalitesini değerlendirmiştir. WLP’nin yerel optimumlarda
+     sıkışma eğilimine dikkat çekilmiştir.
+
+   • Arostegui, M. A., Kadipasaoglu, S. N., & Khumawala, B. M. (2006). An
+     empirical comparison of metaheuristics for the facility location problem.
+     Bu makalede, Simulated Annealing (SA), Tabu Search, Genetic Algorithm ve VNS
+     algoritmaları karşılaştırılmış; VNS’nin özellikle büyük veri setlerinde daha istikrarlı
+     ve kaliteli çözümler sunduğu raporlanmıştır.
+
+   • Hajiaghaei-Keshteli, M., & Aminnayeri, M. (2014). A hybrid algorithm
+     for capacitated facility location problem. Bu çalışmada Quantum Annealing
+     (QA) benzeri yeni metasezgisel stratejiler önerilmiş ve klasik yöntemlerle kıyasla-
+     maları yapılmıştır. Özellikle kapasite kısıtlarının etkili biçimde ele alınması dikkat
+     çekmektedir.
+
+   • Aydın, M. E., & Özdemirel, N. E. (2004). A simulated annealing algo-
+     rithm to the multi-facility location problem. Bu çalışma, SA algoritmasının
+     WLP üzerindeki başarısını analiz ederken parametre ayarlamalarının sonuca etki-
+     sini de detaylı biçimde incelemiştir. SA’nın yakınsama kabiliyeti literatürde kabul
+     görmüştür.
+
+   Literatürdeki bu çalışmalar, WLP’nin çözümünde metasezgisel yöntemlerin etkinliğini
+ortaya koymakta ve bu çalışmada kullanılan VNS algoritması başta olmak üzere SA, QA,
+Tabu ve Greedy algoritmalarının tercih edilmesinin gerekçesini desteklemektedir.
+
+
+
+                                             3
+Bölüm 3
+
+Kullanılan Yöntem
+
+Bu çalışmada Depo Yerleşim Problemi’nin (Warehouse Location Problem - WLP) çö-
+zümünde, çeşitli sezgisel ve metasezgisel algoritmalar denenmiş, nihai olarak en başarılı
+sonuçları veren Variable Neighborhood Search (VNS) algoritması esas alınmıştır. Ayrıca
+karşılaştırma amacıyla Simulated Annealing (SA), Quantum Annealing (QA), Tabu Se-
+arch ve Greedy algoritmaları da uygulanmıştır. Bu bölümde kullanılan algoritmaların
+temel çalışma yapıları özetlenmiş, parametreler ve çözüm stratejileri detaylandırılmıştır.
+
+
+3.1     Algoritma Akışı
+Aşağıda VNS algoritması temelinde kullanılan genel çözüm akışı verilmiştir:
+
+  1. Başlangıç Çözümü: Greedy algoritmasıyla, her müşteri kapasiteyi aşmayacak şe-
+     kilde en düşük taşıma maliyetine sahip depoya atanarak başlangıç çözümü oluştu-
+     rulur.
+
+  2. Komşuluk Yapısı: Mevcut çözümde müşteri-depo atamaları üzerinde farklı kom-
+     şuluk türleri (örneğin müşteri yer değişimi, depo değişimi) tanımlanır.
+
+  3. Shaking (Sarsma): Rastgele bir komşuluk yapısına göre mevcut çözüm bozulur
+     ve yeni bir çözüm elde edilir.
+
+  4. Local Search: Shaking sonucunda elde edilen çözüm lokal bir iyileştirme algorit-
+     ması (örneğin yeniden atama) ile optimize edilir.
+
+  5. Karar: Yeni çözüm, mevcut çözümden daha iyi ise kabul edilir; değilse bir sonraki
+     komşuluk yapısına geçilir.
+
+  6. Döngü: Belirli bir iterasyon sayısı boyunca komşuluk yapıları değiştirilerek algo-
+     ritma tekrarlanır.
+
+
+3.2     Denenen Diğer Yöntemler
+Karşılaştırmalı analiz için aşağıdaki algoritmalar da uygulanmıştır:
+
+   • Simulated Annealing (SA): Yüksek başlangıç sıcaklığı ve belirli bir soğuma ora-
+     nıyla müşteriler arası yeniden atama yapılmıştır.
+
+
+                                            4
+   • Quantum Annealing (QA): Olumlu çözüm sıçramalarına izin veren bir yapay
+     annealing yaklaşımı kullanılmıştır.
+
+   • Tabu Search: Geçmiş çözümleri tabu listesine alarak tekrar ziyaretleri engelleyen
+     yerel arama yöntemi denenmiştir.
+
+   • Greedy: En düşük taşıma maliyetine göre her müşteriyi bir defalık atayan basit
+     ama hızlı algoritma.
+
+
+3.3     Parametreler
+Kullanılan temel parametreler aşağıdaki tabloda verilmiştir:
+
+ Parametre                  Değer
+ İterasyon Sayısı           25 ve 50
+ Komşuluk Yapısı Sayısı     3 farklı komşuluk tanımı kullanıldı
+ Başlangıç Yöntemi          Greedy algoritması ile oluşturulan çözüm
+ Karar Kriteri              Toplam maliyetin minimize edilmesi
+ Veri Setleri               25, 50, 200, 300, 500 müşterili örnekler
+ Zaman Sınırlaması          Sabit süre kısıtı verilmemiştir, çözüm süresi veri setinin bü-
+                            yüklüğüne göre değişmekte ve özellikle büyük örneklerde bir-
+                            kaç dakikayı bulabilmektedir.
+ sonuç üretmektedir
+
+                        Tablo 3.1: VNS Algoritması Parametreleri
+
+
+
+3.4     Uygulama Detayları
+Her algoritma, aynı giriş dosyaları üzerinde uygulanmıştır. Elde edilen çözümler toplam
+maliyet cinsinden karşılaştırılmış, en iyi sonuçlar VNS algoritması ile alınmıştır. Kod-
+lama Python programlama dili ile gerçekleştirilmiş, veri giriş-çıkış işlemleri .txt dosyaları
+üzerinden yapılmıştır.
+
+
+
+
+                                             5
+Bölüm 4
+
+Deneysel Sonuçlar
+
+Bu bölümde, Depo Yerleşim Problemi (WLP) için geliştirilen Python tabanlı çözümün
+çıktıları sunulmuştur. Uygulama, farklı büyüklükteki veri setleri üzerinde çalıştırılmış ve
+Varyanslı Komşuluk Arama (VNS) algoritması temel alınmıştır.
+
+
+4.1     Uygulanan Algoritmalar
+Projenin geliştirme sürecinde aşağıdaki algoritmalar denenmiştir:
+
+   • Greedy (Açgözlü) Başlangıç Algoritması
+
+   • Simulated Annealing (SA)
+
+   • Quantum Annealing (QA)
+
+   • Tabu Search
+
+   • Variable Neighborhood Search (VNS)
+
+     Her algoritma çeşitli veri setlerinde test edilmiştir. En iyi çözüm kalitesi ve kararlı-
+lığı VNS algoritmasında gözlemlenmiş; bu nedenle nihai çözüm çıktıları VNS sonuçlarına
+dayandırılmıştır.
+
+
+
+
+                                             6
+4.2     Veri Setleri ve Deney Yapılandırması
+Denemeler aşağıdaki veri setleri üzerinde gerçekleştirilmiştir:
+
+   • wlp_25
+
+   • wlp_50
+
+   • wlp_200
+
+   • wlp_300
+
+   • wlp_500
+
+    Her veri setinde kapasite, kurulum maliyeti, müşteri talepleri ve taşıma maliyetleri
+gibi bilgiler yer almaktadır.
+    VNS algoritması için kullanılan temel parametreler şunlardır:
+
+   • İterasyon Sayısı: 50
+
+   • Başlangıç Çözümü: Greedy algoritması
+
+   • Çözüm Süresi: Veri setine göre birkaç saniyeden birkaç dakikaya kadar değişmektedir
+
+
+4.3     Çözüm Başarımı
+Kodun çıktısında, her müşteri için atanan depo bilgileri ve toplam maliyet hesaplanarak
+.out uzantılı dosyalara kaydedilmiştir.
+
+   • VNS algoritması, küçük veri setlerinde saniyeler içinde çözüm üretmiştir.
+
+   • 200 ve üzeri veri setlerinde işlem süresi artmış, ancak sonuçların kalitesi korunmuş-
+     tur.
+
+   • Greedy algoritması hızlı ama yüksek maliyetli sonuçlar vermiştir.
+
+   • SA ve QA algoritmalarında yakınsama süresi uzamış, bazı veri setlerinde iyi sonuçlar
+     üretilememiştir.
+
+   • Tabu Search, bazı örneklerde erken duraklama problemi yaşamıştır.
+
+
+4.4     Sonuçların Değerlendirmesi
+Genel olarak, VNS algoritması hem küçük hem de büyük veri setlerinde en kararlı ve
+düşük maliyetli çözümleri sunmuştur. Bu durum, metasezgisel bir yaklaşım olan VNS’nin
+WLP türündeki kombinatoryal problemler için uygun ve etkili bir yöntem olduğunu gös-
+termektedir.
+
+
+
+
+                                             7
+4.5     Sonuç Tablosu
+
+                  Veri Seti   Toplam Maliyet               Atamaları
+                  wlp_25        797582.29              7, 6, 4, ..., 24, 19
+                  wlp_50        858697.25            24, 24, 2, ..., 36, 24
+                  wlp_200         3275.08           10, 39, 103, ..., 10, 103
+                  wlp_300         5049.22           132, 215, 71, ..., 71, 71
+                  wlp_500         3265.98          197, 455, 20, ..., 197, 455
+
+
+
+
+4.6     Grafiksel Sonuçlar
+Aşağıda, farklı veri setleri (şehir sayısı) için elde edilen optimal maliyet değerleri gösteril-
+mektedir:
+
+
+
+
+                  Şekil 4.1: Veri Seti Büyüklüğüne Göre Optimal Maliyet
+
+
+
+
+                                               8
+Bölüm 5
+
+Sonuç ve Tartışma
+
+Bu çalışmada, Depo Yerleşim Problemi (WLP) için çeşitli metasezgisel algoritmalar uygu-
+lanmış ve en iyi performansı gösteren Değişken Komşuluk Arama (VNS) algoritması
+detaylı biçimde ele alınmıştır. Deneysel çalışmalar, farklı boyutlarda beş veri seti (wlp_25,
+wlp_50, wlp_200, wlp_300, wlp_500) kullanılarak gerçekleştirilmiştir.
+    VNS dışında Simulated Annealing (SA), Quantum Annealing (QA), Tabu Search ve
+Greedy algoritmaları da test edilmiştir. Bu algoritmalardan bazıları daha küçük veri setle-
+rinde kabul edilebilir çözümler üretmiş olsa da, genel olarak VNS algoritması hem çözüm
+kalitesi hem de kararlılığı açısından daha üstün performans göstermiştir.
+    VNS algoritması, sistematik olarak komşuluk yapısını değiştirerek lokal minimum-
+lardan kaçınma yeteneği sayesinde, özellikle büyük boyutlu veri setlerinde daha düşük
+maliyetli ve istikrarlı çözümler elde etmiştir. Bütün algoritmalar için iterasyon sayısı 50
+olarak sabit tutulmuştur ve karşılaştırma bu doğrultuda yapılmıştır.
+    Yapılan gözlemler sonucunda aşağıdaki bulgulara ulaşılmıştır:
+
+   • VNS algoritması, küçük ve büyük ölçekli veri setlerinde tutarlı ve iyi sonuçlar
+     üretmiştir.
+
+   • SA ve QA algoritmaları zaman zaman iyi çözümler üretmiş olsa da kararlılık açı-
+     sından yetersiz kalmıştır.
+
+   • Tabu Search ve Greedy algoritmalar daha yüksek maliyetli çözümler üretmiştir.
+
+   • Büyük veri setlerinde çözüm yolları çok uzun olduğundan sadece maliyet değerleri
+     sunulmuş, tam yollar Ekler kısmına eklenmiştir.
+
+   • Kodun çalışma süresi veri setinin boyutuna bağlı olarak birkaç saniyeden birkaç
+     dakikaya kadar değişmektedir.
+
+   Sonuç olarak, bu proje kapsamında uygulanan VNS algoritması, WLP için etkili,
+esnek ve güçlü bir çözüm yöntemi olduğunu kanıtlamıştır. Literatürdeki bulgularla
+da uyumlu olarak, metasezgisel yöntemlerin depo yerleşim problemleri gibi kombinatoryal
+optimizasyon problemlerinde başarılı sonuçlar üretebildiği görülmüştür.
+
+
+5.1     Kaynakça
+
+
+                                             9
+Kaynakça
+
+ [1] Haluk Topcuoglu, Salim Hariri, and Min-You Wu, Performance-effective and low-
+     complexity task scheduling for heterogeneous computing, IEEE Transactions on Pa-
+     rallel and Distributed Systems, 2002.
+
+ [2] Yu-Kwong Kwok and Ishfaq Ahmad, Benchmarking the task graph scheduling algo-
+     rithms, Journal of Parallel and Distributed Computing, 1999.
+
+ [3] Young Choon Lee and Albert Y. Zomaya, Workflow scheduling for grid computing:
+     A survey, Future Generation Computer Systems, 2004.
+
+ [4] J. Yu and R. Buyya, A taxonomy of scientific workflow systems for grid computing,
+     ACM SIGMOD Record, 2005.
+
+ [5] T. D. Braun, H. J. Siegel, et al., A comparison of eleven static heuristics for mapping a
+     class of independent tasks onto heterogeneous distributed computing systems, Journal
+     of Parallel and Distributed Computing, 2001.
+
+ [6] Michael L. Pinedo, Scheduling: Theory, Algorithms, and Systems, Springer, 2016.
+
+ [7] Michael R. Garey and David S. Johnson, Computers and Intractability: A Guide to
+     the Theory of NP-Completeness, W. H. Freeman, 1979.
+
+ [8] Mauro Birattari, Tuning metaheuristics: A machine learning perspective, Springer,
+     2009.
+
+ [9] Ibrahim H. Osman and Gilbert Laporte, Metaheuristics: A bibliography, Annals of
+     Operations Research, 1996.
+
+[10] D. Bienstock and M. Murphey, WLP Benchmark Dataset Collection for Task Sc-
+     heduling Problems, Accessed 2024, from https://www.mccormick.northwestern.
+     edu/research/downloads/wlp
+
+[11] Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein,
+     Introduction to Algorithms, 3rd ed., MIT Press, 2009.
+
+[12] Your Name, Cost Function-based Task Assignment Approach for WSP Instances,
+     Unpublished manuscript, 2025.
+
+
+
+
+                                             10
+

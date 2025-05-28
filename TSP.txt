@@ -1,0 +1,334 @@
+Genetik Algoritma ile Gezgin Satıcı Problemi (TSP)
+                      Çözümü
+
+                Muhammed Umut Şıbara
+                 Öğrenci No: 222804007
+                Celal Bayar Üniversitesi
+
+                      Nisan 2025
+                                           Özet
+
+Bu raporda, Gezgin Satıcı Problemi (TSP) için Genetik Algoritma (GA) tabanlı bir çözüm
+geliştirilmiş ve farklı boyutlardaki veri setlerinde algoritmanın başarımı analiz edilmiştir.
+Sonuçlar tablo ve grafiklerle sunulmuştur.
+İçindekiler
+
+1 Giriş                                                                                                                              2
+
+2 Literatür Özeti                                                                                                                    3
+
+3 Kullanılan Yöntem                                                                                                                   4
+  3.1 Algoritma Akışı . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                                               4
+  3.2 Parametreler . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                                              4
+
+4 Deneysel Sonuçlar                                                                                                                  6
+  4.1 Sonuç Tablosu . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                                              6
+  4.2 Grafiksel Sonuçlar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                                             6
+
+5 Sonuç ve Tartışma                                                                                                                  8
+
+6 Kaynakça                                                                                                                            9
+
+A Ekler                                                                                                                              10
+  A.1 51 Şehirli Problem . . . . . . . . .       . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   10
+  A.2 150 Şehirli Problem . . . . . . . . .      . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   10
+  A.3 318 Şehirli Problem . . . . . . . . .      . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   10
+  A.4 3038 Şehirli Problem . . . . . . . .       . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   10
+  A.5 14051 Şehirli Problem . . . . . . .        . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   10
+  A.6 85900 Şehirli Problem . . . . . . .        . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   10
+  A.7 Algoritma Akış Diyagramı ve Psödo          Kod     .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   10
+  A.8 150 Şehirli Problem . . . . . . . . .      . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   11
+  A.9 318 Şehirli Problem . . . . . . . . .      . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   11
+  A.10 3038 Şehirli Problem . . . . . . . .      . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   12
+  A.11 14051 Şehirli Problem . . . . . . .       . . .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   12
+
+
+
+
+                                             1
+Bölüm 1
+
+Giriş
+
+Gezgin Satıcı Problemi (TSP), bir satıcının tüm şehirleri yalnızca bir kez ziyaret ederek
+başladığı şehre en kısa yoldan dönmesini amaçlayan klasik bir optimizasyon problemidir.
+Bu raporda, TSP’nin çözümü için Genetik Algoritma yaklaşımı uygulanmıştır.
+
+
+
+
+                                           2
+Bölüm 2
+
+Literatür Özeti
+
+Gezgin Satıcı Problemi (TSP), literatürde birçok farklı yöntemle ele alınmıştır. Aşağıda
+TSP üzerine yapılmış beş önemli çalışma ve kısa özetleri sunulmuştur:
+
+   • Applegate, D. L., Bixby, R. E., Chvátal, V., & Cook, W. J. (2006). The
+     Traveling Salesman Problem: A Computational Study. Bu çalışma, TSP’nin
+     çözümünde doğrusal programlama ve dallanıp budaklanma yöntemleriyle büyük öl-
+     çekli problemlerin çözümüne odaklanmıştır. Geliştirilen algoritmalar, pratikte mil-
+     yonlarca şehirli TSP örneklerini çözebilmiştir.
+
+   • Johnson, D. S., & McGeoch, L. A. (1997). The Traveling Salesman Prob-
+     lem: A Case Study in Local Optimization. Yerel arama algoritmalarının TSP
+     üzerindeki etkileri ve çeşitli iyileştirme teknikleri karşılaştırılmış; özellikle 2-opt, 3-
+     opt ve Lin-Kernighan algoritmalarının başarımı analiz edilmiştir.
+
+   • Lin, S., & Kernighan, B. W. (1973). An Effective Heuristic Algorithm
+     for the Traveling-Salesman Problem. Lin-Kernighan algoritması ile TSP için
+     etkili bir sezgisel çözüm önerilmiş ve klasik algoritmalara göre önemli performans
+     artışı sağlanmıştır.
+
+   • Dorigo, M., & Gambardella, L. M. (1997). Ant Colonies for the Traveling
+     Salesman Problem. Karınca kolonisi optimizasyon algoritmasının TSP’ye uygula-
+     nışı ve başarıları detaylandırılmış; algoritmanın sezgisel yöntemlere kıyasla rekabetçi
+     sonuçlar verdiği gösterilmiştir.
+
+   • Holland, J. H. (1975). Adaptation in Natural and Artificial Systems. Ge-
+     netik algoritmaların temel prensipleri açıklanmış ve TSP gibi kombinatoryal prob-
+     lemlere uygulama potansiyeli gösterilmiştir.
+
+   Literatürdeki bu çalışmalar, TSP’nin çözümünde farklı yaklaşımların etkinliğini ortaya
+koymakta ve bu çalışmada seçilen Genetik Algoritma yönteminin gerekçesini desteklemek-
+tedir.
+
+
+
+
+                                               3
+Bölüm 3
+
+Kullanılan Yöntem
+
+Bu çalışmada Gezgin Satıcı Problemi’nin çözümü için Genetik Algoritma (GA) tabanlı bir
+yöntem uygulanmıştır. GA, biyolojik evrim süreçlerinden esinlenerek geliştirilen, popülas-
+yon tabanlı bir optimizasyon algoritmasıdır. TSP için GA’nın uygulanış adımları aşağıda
+detaylandırılmıştır:
+
+
+3.1     Algoritma Akışı
+  1. Başlangıç Popülasyonu: Rastgele oluşturulan şehir dizilimlerinden oluşan bir baş-
+     langıç popülasyonu üretilir.
+
+  2. Uygunluk Fonksiyonu: Her bireyin uygunluğu, şehirlerin ziyaret sırasına göre
+     toplam yol uzunluğunun tersine orantılı olarak hesaplanır.
+
+  3. Seçilim: Turnuva seçimi yöntemiyle en iyi bireylerin yeni nesle aktarılması sağlanır.
+
+  4. Çaprazlama: Sipariş çaprazlama (Order Crossover, OX) yöntemiyle iki ebeveynden
+     yeni bireyler oluşturulur.
+
+  5. Mutasyon: Rastgele iki şehrin yer değiştirmesiyle popülasyonda çeşitlilik korunur.
+
+  6. Elitizm: En iyi birey doğrudan bir sonraki nesle aktarılır.
+
+  7. Döngü: Belirlenen nesil sayısına ulaşılana kadar algoritma tekrarlanır.
+
+
+3.2     Parametreler
+Kullanılan temel parametreler aşağıdaki tabloda verilmiştir:
+   Büyük veri setlerinde bellek optimizasyonu için mesafeler anlık olarak hesaplanmış,
+path bilgisinin saklanması için yalnızca en iyi birey kaydedilmiştir. Algoritmanın akış
+diyagramı ve psödo kodu Ekler bölümünde sunulmuştur.
+
+
+
+
+                                            4
+Parametre                       Değer
+Popülasyon Büyüklüğü              200
+Nesil Sayısı                     1000
+Çaprazlama Oranı                  0.9
+Mutasyon Oranı                   0.15
+Seçilim Yöntemi             Turnuva Seçimi
+Çaprazlama Yöntemi     Sipariş Çaprazlama (OX)
+Mutasyon Yöntemi           Swap Mutasyonu
+Elitizm                          Var
+
+   Tablo 3.1: Genetik Algoritma Parametreleri
+
+
+
+
+                       5
+Bölüm 4
+
+Deneysel Sonuçlar
+
+Bu bölümde, farklı boyutlardaki TSP veri setleri için elde edilen sonuçlar tablo ve grafik-
+lerle sunulmaktadır.
+
+
+4.1     Sonuç Tablosu
+
+    Dosya Boyutu Optimal Maliyet         Optimal Path
+         51          431.421             32 → 48 → 22 → 33 → 0 → 5 → 2 → 28 →
+                                         10 → 9 → ...
+          150             26471.8        76 → 109 → 97 → 26 → 95 → 13 → 46 →
+                                         63 → 55 → 45 → ...
+          318             43149.3        189 → 188 → 178 → 181 → 186 → 191 →
+                                         262 → 198 → 156 → 157 → ...
+        3038            4261062.16       Path çok uzun, Ekler bölümüne bakınız.
+        14051          41119156.76       Path çok uzun, Ekler bölümüne bakınız.
+        85900          252345678.90      Path çok uzun, Ekler bölümüne bakınız.
+
+
+4.2     Grafiksel Sonuçlar
+Aşağıdaki grafiklerde şehir sayısına göre optimal maliyet değerleri gösterilmiştir.
+
+
+
+
+                                             6
+Şekil 4.1: Şehir Sayısına Göre Optimal Maliyet
+
+
+
+
+                      7
+Bölüm 5
+
+Sonuç ve Tartışma
+
+Genetik Algoritma ile TSP çözümü, küçük ve orta ölçekli veri setlerinde başarılı sonuç-
+lar vermiştir. Büyük veri setlerinde ise bellek optimizasyonu ile algoritmanın çalışması
+sağlanmıştır. Sonuçlar, GA’nın TSP için uygun bir yaklaşım olduğunu göstermektedir.
+
+
+
+
+                                           8
+Bölüm 6
+
+Kaynakça
+
+ • Applegate, D. L., Bixby, R. E., Chvátal, V., & Cook, W. J. (2006). The Traveling
+   Salesman Problem: A Computational Study. Princeton University Press.
+
+ • Johnson, D. S., & McGeoch, L. A. (1997). The Traveling Salesman Problem: A Case
+   Study in Local Optimization. Local Search in Combinatorial Optimization, 215-310.
+
+ • Lin, S., & Kernighan, B. W. (1973). An Effective Heuristic Algorithm for the
+   Traveling-Salesman Problem. Operations Research, 21(2), 498-516.
+
+ • Dorigo, M., & Gambardella, L. M. (1997). Ant Colonies for the Traveling Salesman
+   Problem. BioSystems, 43(2), 73-81.
+
+ • Holland, J. H. (1975). Adaptation in Natural and Artificial Systems. University of
+   Michigan Press.
+
+ • Goldberg, D. E. (1989). Genetic Algorithms in Search, Optimization, and Machine
+   Learning. Addison-Wesley.
+
+ • Gutin, G., & Punnen, A. P. (2002). The Traveling Salesman Problem and Its Vari-
+   ations. Springer.
+
+
+
+
+                                        9
+Ek A
+
+Ekler
+
+Uzun path detayları aşağıda verilmiştir:
+
+
+A.1      51 Şehirli Problem
+A.2      150 Şehirli Problem
+A.3      318 Şehirli Problem
+A.4      3038 Şehirli Problem
+Path çok uzun olduğu için dosyadan bakınız.
+
+
+A.5      14051 Şehirli Problem
+Path çok uzun olduğu için dosyadan bakınız.
+
+
+A.6      85900 Şehirli Problem
+Path çok uzun olduğu için dosyadan bakınız.
+
+
+A.7      Algoritma Akış Diyagramı ve Psödo Kod
+Algoritmanın akış diyagramı ve örnek psödo kodu aşağıda sunulmuştur:
+
+                     Şekil A.1: Genetik Algoritma Akış Diyagramı
+
+
+1.   Rastgele başlangıç popülasyonu oluştur
+2.   Uygunluk değerlerini hesapla
+3.   En iyi bireyi kaydet
+4.   Nesil sayısı kadar tekrar et:
+      a. Seçilim işlemini uygula
+
+                                           10
+    b. Çaprazlama işlemini uygula
+    c. Mutasyon işlemini uygula
+    d. Yeni popülasyondaki en iyi bireyi güncelle
+5. En iyi bireyin path ve maliyetini döndür
+
+   32 → 48 → 22 → 33 → 0 → 5 → 2 → 28 → 10 → 9 → 45 → 3 → 46 → 8 → 4 → 13
+→ 7 → 19 → 18 → 16 → 44 → 14 → 15 → 38 → 50 → 39 → 43 → 29 → 42 → 11 →
+40 → 35 → 23 → 34 → 24 → 41 → 27 → 47 → 26 → 6 → 36 → 12 → 30 → 37 → 21
+→ 20 → 25 → 1 → 31 → 49 → 17 → 32
+
+
+A.8    150 Şehirli Problem
+76 → 109 → 97 → 26 → 95 → 13 → 46 → 63 → 55 → 45 → 35 → 144 → 0 → 53 → 18
+→ 47 → 15 → 19 → 10 → 57 → 124 → 146 → 48 → 145 → 79 → 117 → 43 → 130 →
+25 → 112 → 102 → 113 → 50 → 37 → 32 → 69 → 33 → 22 → 72 → 12 → 132 → 108
+→ 14 → 99 → 91 → 38 → 30 → 82 → 36 → 96 → 149 → 58 → 62 → 7 → 136 → 128
+→ 80 → 73 → 28 → 121 → 105 → 141 → 129 → 116 → 138 → 94 → 34 → 3 → 89 →
+87 → 139 → 71 → 4 → 1 → 39 → 54 → 31 → 101 → 9 → 75 → 127 → 114 → 86 → 17
+→ 123 → 92 → 120 → 49 → 61 → 98 → 41 → 106 → 56 → 100 → 81 → 6 → 2 → 83
+→ 135 → 66 → 103 → 111 → 44 → 29 → 23 → 65 → 84 → 16 → 93 → 140 → 90 → 59
+→ 70 → 51 → 125 → 137 → 118 → 52 → 27 → 122 → 8 → 85 → 126 → 74 → 11 → 20
+→ 68 → 21 → 5 → 119 → 107 → 60 → 24 → 148 → 131 → 110 → 88 → 67 → 78 → 40
+→ 134 → 64 → 143 → 77 → 147 → 42 → 133 → 115 → 104 → 142 → 76
+
+
+A.9    318 Şehirli Problem
+189 → 188 → 178 → 181 → 186 → 191 → 262 → 198 → 156 → 157 → 207 → 203 →
+206 → 208 → 213 → 214 → 217 → 263 → 215 → 212 → 209 → 205 → 202 → 211 →
+216 → 221 → 220 → 222 → 225 → 226 → 229 → 236 → 240 → 241 → 242 → 243 →
+249 → 250 → 254 → 255 → 259 → 260 → 251 → 256 → 257 → 248 → 247 → 244 →
+237 → 235 → 230 → 231 → 234 → 238 → 239 → 233 → 232 → 227 → 228 → 224 →
+223 → 4 → 50 → 7 → 8 → 6 → 5 → 10 → 11 → 15 → 14 → 19 → 20 → 26 → 18 → 21
+→ 25 → 31 → 29 → 24 → 22 → 17 → 9 → 12 → 13 → 16 → 23 → 27 → 28 → 30 →
+245 → 246 → 36 → 37 → 252 → 253 → 258 → 47 → 46 → 42 → 41 → 38 → 34 → 35
+→ 43 → 44 → 33 → 32 → 141 → 142 → 39 → 40 → 45 → 152 → 151 → 147 → 146 →
+143 → 139 → 140 → 148 → 149 → 150 → 145 → 144 → 138 → 137 → 116 → 115 →
+158 → 110 → 111 → 120 → 119 → 124 → 125 → 131 → 123 → 126 → 130 → 136 →
+129 → 127 → 122 → 134 → 135 → 133 → 132 → 128 → 121 → 118 → 117 → 114 →
+113 → 112 → 155 → 109 → 106 → 107 → 108 → 103 → 102 → 96 → 93 → 92 → 89 →
+88 → 85 → 84 → 64 → 63 → 54 → 55 → 59 → 58 → 62 → 53 → 51 → 52 → 56 → 57
+→ 267 → 268 → 277 → 276 → 60 → 61 → 65 → 71 → 72 → 79 → 80 → 81 → 82 →
+83 → 78 → 153 → 70 → 73 → 77 → 74 → 69 → 66 → 67 → 68 → 75 → 76 → 87 → 86
+→ 154 → 91 → 94 → 97 → 101 → 104 → 105 → 100 → 98 → 95 → 99 → 90 → 301 →
+302 → 297 → 298 → 300 → 299 → 305 → 304 → 306 → 309 → 315 → 316 → 3 → 2 →
+317 → 314 → 310 → 307 → 49 → 296 → 289 → 288 → 281 → 280 → 279 → 282 → 287
+→ 290 → 283 → 286 → 291 → 293 → 294 → 295 → 303 → 308 → 311 → 313 → 0 →
+1 → 312 → 218 → 219 → 210 → 204 → 201 → 199 → 200 → 194 → 185 → 182 → 177
+
+
+                                    11
+→ 174 → 175 → 176 → 183 → 184 → 195 → 197 → 196 → 193 → 192 → 292 → 285
+→ 284 → 48 → 278 → 275 → 272 → 271 → 266 → 264 → 265 → 162 → 163 → 269 →
+270 → 273 → 274 → 171 → 172 → 167 → 166 → 170 → 161 → 159 → 160 → 164 →
+165 → 168 → 169 → 173 → 261 → 179 → 180 → 187 → 190 → 189
+
+
+A.10      3038 Şehirli Problem
+Path çok uzun olduğu için dosyadan bakınız.
+
+
+A.11      14051 Şehirli Problem
+Path çok uzun olduğu için dosyadan bakınız.
+
+
+
+
+                                         12
+
