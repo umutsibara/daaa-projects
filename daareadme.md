@@ -11,27 +11,28 @@ Bu proje, iki önemli optimizasyon probleminin çözümü için farklı metasezg
 
 ## 📚 Proje Bileşenleri
 
-### 1. Depo Yerleşim Problemi (WLP) Çözücü
+### 1. Depo Yerleşim Problemi (WLP) Çözücü (`main.py`)
 
 #### Kullanılan Algoritmalar
 - Açgözlü (Greedy) algoritma (başlangıç çözümü için)
 - Değişken Komşuluk Araması (Variable Neighborhood Search - VNS)
-- Simüle Edilmiş Tavlama (Simulated Annealing - SA)
-- Kuantum Tavlama (Quantum Annealing - QA)
-- Tabu Arama (Tabu Search - TS)
 
 #### Özellikler
 - 25, 50, 200, 300 ve 500 müşteriden oluşan veri setleri desteği
 - Depo kurulum (setup) ve taşıma (transportation) maliyetlerinin optimizasyonu
 - Yapılandırılmış giriş/çıkış dosya formatları
 - Detaylı performans raporlama
+- Otomatik veri seti işleme ve sonuç kaydetme
 
-#### Dosya Yapısı
-- `main.py`: Ana program ve VNS implementasyonu
-- `Dataset/`: Test veri setleri
-- `Res/`: Sonuç dosyaları
+#### Teknik Detaylar
+- Greedy başlangıç çözümü: Her müşteriyi en düşük maliyetli depoya atar
+- VNS implementasyonu:
+  - Shake operatörü: Rastgele müşteri yeniden ataması
+  - Local Search: Her müşteri için en iyi depo değişimi
+  - Feasibility kontrolü: Depo kapasitelerinin aşılmaması
+  - Maliyet hesaplama: Kurulum + taşıma maliyetleri
 
-### 2. Gezgin Satıcı Problemi (TSP) Çözücü
+### 2. Gezgin Satıcı Problemi (TSP) Çözücü (`tsp_ga_solver.py`)
 
 #### Kullanılan Algoritma
 - Genetik Algoritma (Genetic Algorithm - GA) implementasyonu
@@ -42,10 +43,20 @@ Bu proje, iki önemli optimizasyon probleminin çözümü için farklı metasezg
 - Takas Mutasyonu (Swap Mutation)
 - Elitizm (Elitism) stratejisi
 - Büyük ölçekli problemler için optimize edilmiş bellek kullanımı
+- Adaptif parametre ayarları (problem boyutuna göre)
 
-#### Dosya Yapısı
-- `tsp_ga_solver.py`: GA implementasyonu
-- Test veri setleri (51'den 85.900 şehre kadar)
+#### Teknik Detaylar
+- Bellek optimizasyonu:
+  - 10,000+ şehir için anlık mesafe hesaplama
+  - Büyük problemler için özel parametre ayarları
+- Genetik operatörler:
+  - Tournament Selection (k=5)
+  - Ordered Crossover
+  - Swap Mutation (0.2 olasılık)
+- Performans optimizasyonları:
+  - Elitizm ile en iyi çözümlerin korunması
+  - Zaman limiti kontrolü
+  - Problem boyutuna göre popülasyon ve nesil sayısı ayarlaması
 
 ## 💻 Teknik Detaylar
 
@@ -89,6 +100,7 @@ Bu proje, iki önemli optimizasyon probleminin çözümü için farklı metasezg
 - Örnek performans metrikleri:
   - 51 şehir: ~1 saniye çözüm süresi
   - 1000 şehir: ~5 dakika çözüm süresi
+  - 85.900 şehir: ~15 dakika çözüm süresi (optimize edilmiş parametrelerle)
 
 ## 🛠️ Kurulum ve Kullanım
 
@@ -100,9 +112,6 @@ pip install numpy
 
 ### WLP Çözücü Kullanımı
 ```bash
-# Proje dizinine git
-cd WLP_222804007_MuhammedUmut_Şıbara
-
 # Programı çalıştır
 python main.py
 
